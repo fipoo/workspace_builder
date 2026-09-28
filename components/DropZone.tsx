@@ -1,7 +1,6 @@
 'use client';
 
 import { useDroppable } from '@dnd-kit/core';
-import { animate } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { getItem, type Slot } from '@/data/catalog';
 import { cn, zoneId, type DragData } from '@/lib/dnd';
@@ -52,9 +51,9 @@ export function DropZone({ slot, className, style, children, lockedHint, quiet }
   useEffect(() => {
     if (!pulse || pulse.slot !== slot || !ref.current) return;
     if (pulse.kind === 'reject') {
-      animate(ref.current, { x: [0, -10, 10, -7, 7, -3, 0] }, { duration: 0.45 });
+      ref.current.animate([0, -10, 10, -7, 7, -3, 0].map((x) => ({ translate: `${x}px 0` })), { duration: 450, easing: 'ease-out' });
     } else {
-      animate(ref.current, { scale: [1, 1.03, 1] }, { duration: 0.3 });
+      ref.current.animate([{ scale: '1' }, { scale: '1.03' }, { scale: '1' }], { duration: 300, easing: 'ease-out' });
     }
   }, [pulse, slot]);
 

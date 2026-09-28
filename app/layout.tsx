@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
+import { MotionProvider } from '@/components/MotionProvider';
 import { SetupHydrator } from '@/components/SetupHydrator';
 import { Toast } from '@/components/Toast';
 import './globals.css';
@@ -22,9 +23,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
       <body className="min-h-dvh antialiased">
-        <SetupHydrator />
-        {children}
-        <Toast />
+        <MotionProvider>
+          <SetupHydrator />
+          {children}
+          <Toast />
+        </MotionProvider>
       </body>
     </html>
   );

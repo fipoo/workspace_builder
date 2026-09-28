@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { ArrowLeft, ArrowRight, CalendarDays, Loader2, MapPin, PartyPopper, ShieldCheck, Truck, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -84,7 +84,7 @@ export default function CheckoutPage() {
               <div className="overflow-hidden rounded-3xl bg-white/80 shadow-lift ring-1 ring-jungle-900/5">
                 <AnimatePresence mode="wait" initial={false}>
                   {step === 'review' ? (
-                    <motion.div
+                    <m.div
                       key="summary"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -97,9 +97,9 @@ export default function CheckoutPage() {
                         setStart={setStart}
                         onRent={() => setStep('details')}
                       />
-                    </motion.div>
+                    </m.div>
                   ) : (
-                    <motion.div
+                    <m.div
                       key="form"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -121,7 +121,7 @@ export default function CheckoutPage() {
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
                       />
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </div>
@@ -159,7 +159,7 @@ function ReviewItems({ duration }: { duration: Duration }) {
             <ul className="mt-2 divide-y divide-jungle-900/5">
               <AnimatePresence initial={false}>
                 {lines.map(({ placed: p, item }) => (
-                  <motion.li
+                  <m.li
                     key={p.uid}
                     layout
                     exit={{ opacity: 0, height: 0 }}
@@ -178,7 +178,7 @@ function ReviewItems({ duration }: { duration: Duration }) {
                     >
                       <X size={14} aria-hidden />
                     </button>
-                  </motion.li>
+                  </m.li>
                 ))}
               </AnimatePresence>
             </ul>
@@ -229,7 +229,7 @@ function Summary({
                 )}
               >
                 {activeKey && (
-                  <motion.span
+                  <m.span
                     layoutId="duration-pill"
                     className="absolute inset-0 rounded-xl bg-jungle-900"
                     transition={{ type: 'spring', stiffness: 500, damping: 36 }}
@@ -287,14 +287,14 @@ function Summary({
         <div className="flex items-baseline justify-between border-t border-jungle-900/10 pt-3">
           <dt className="font-display text-base font-bold">Total</dt>
           <dd>
-            <motion.span
+            <m.span
               key={total}
               initial={{ y: -6, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               className="block font-display text-2xl font-extrabold tabular-nums"
             >
               {formatIDR(total)}
-            </motion.span>
+            </m.span>
           </dd>
         </div>
       </dl>
@@ -418,14 +418,14 @@ function Success({ order }: { order: Order }) {
     <>
       <Header title="You're all set" />
       <main className="mx-auto max-w-xl px-4 pb-16 pt-8 sm:px-6">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 24, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 22 }}
           className="relative overflow-hidden rounded-[32px] bg-white/85 p-6 text-center shadow-lift ring-1 ring-jungle-900/5 sm:p-8"
         >
           {Array.from({ length: 18 }, (_, i) => (
-            <motion.span
+            <m.span
               key={i}
               aria-hidden
               className="absolute top-16 left-1/2 size-2 rounded-sm"
@@ -440,14 +440,14 @@ function Success({ order }: { order: Order }) {
               transition={{ duration: 1.4, ease: 'easeOut', delay: 0.15 }}
             />
           ))}
-          <motion.div
+          <m.div
             initial={{ scale: 0, rotate: -30 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 14, delay: 0.1 }}
             className="mx-auto grid size-16 place-items-center rounded-2xl bg-sunset-100 text-sunset-600"
           >
             <PartyPopper size={32} aria-hidden />
-          </motion.div>
+          </m.div>
           <h2 className="mt-4 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
             Setup booked, {order.name.split(' ')[0]}!
           </h2>
@@ -494,7 +494,7 @@ function Success({ order }: { order: Order }) {
               Build another setup
             </button>
           </div>
-        </motion.div>
+        </m.div>
       </main>
     </>
   );

@@ -1,50 +1,84 @@
-import { categoryOf, type Item } from '@/data/catalog';
+import { type Item } from '@/data/catalog';
 import { cn } from '@/lib/dnd';
-import { ItemIcon } from '@/lib/icons';
 import { isMonitor } from '@/lib/rules';
+import { ItemPhoto } from './ItemPhoto';
 
-const MONITOR_SIZE: Record<string, string> = {
-  'accessories-monitor-24': 'h-9 w-12 sm:h-12 sm:w-[4.5rem]',
-  'accessories-monitor-27': 'h-10 w-14 sm:h-14 sm:w-20',
-  'accessories-ultrawide': 'h-9 w-20 sm:h-12 sm:w-32',
+/** Box shape of each desk item in the scene. Width comes from the canvas (real cm), this sets height. */
+const DESK_ASPECT: Record<string, string> = {
+  'accessories-desk-lamp': 'aspect-[1/2]',
+  'accessories-webcam': 'aspect-[3/2]',
+  'accessories-keyboard': 'aspect-[3/1]',
+  'accessories-mouse': 'aspect-[3/2]',
 };
 
-/** The visual for an item sitting in the scene (desk top or zone pad). */
+/**
+ * The visual for an item sitting in the scene.
+ * - desk: product cut-out on the desk top, sized to real width by the canvas
+ * - zone: rounded photo tile on a zone pad
+ * - sm: small thumbnail for lists (checkout, mini preview)
+ */
 export function ItemGlyph({ item, size = 'md' }: { item: Item; size?: 'sm' | 'md' | 'lg' }) {
-  const cat = categoryOf(item);
+  if (size === 'sm') {
+    return <ItemPhoto item={item} sizes="40px" className="size-9 rounded-lg bg-white ring-1 ring-jungle-900/10" />;
+  }
 
-  if (isMonitor(item.id) && size !== 'sm') {
+  if (item.id === 'accessories-laptop-stand') {
     return (
-      <div className="flex flex-col items-center" title={item.name}>
-        <div
-          className={cn(
-            'relative grid place-items-center overflow-hidden rounded-md border-[3px] border-jungle-950 bg-jungle-900 shadow-tile',
-            MONITOR_SIZE[item.id],
-          )}
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_30%_20%,#2fb5a8_0%,#1d4030_55%,#0e2119_100%)] opacity-90" />
-          <ItemIcon icon={item.icon} emoji={item.emoji} size={18} className="relative size-4 text-lagoon-100/80 sm:size-5" />
-        </div>
-        <div className="h-1.5 w-1.5 bg-jungle-950 sm:h-2" />
-        <div className="h-1 w-6 rounded-full bg-jungle-950 sm:w-8" />
+      <div title={item.name} className="w-full">
+        <LaptopOnStand />
       </div>
     );
   }
 
-  const box = {
-    sm: 'size-8 rounded-lg',
-    md: 'size-8 rounded-lg sm:size-12 sm:rounded-xl',
-    lg: 'size-14 rounded-2xl',
-  }[size];
-  const icon = { sm: 'size-4', md: 'size-4 sm:size-6', lg: 'size-7' }[size];
+  if (item.slot === 'desk-surface') {
+    const stock = item.source === 'stock';
+    // Crop the square packshot to the product so thin items (lamp) and flat ones (keyboard) read at full size
+    const wide = ['accessories-keyboard', 'accessories-mouse', 'accessories-desk-lamp', 'accessories-webcam'].includes(item.id);
+    return (
+      <div title={item.name} className="flex w-full flex-col items-center">
+        <ItemPhoto
+          item={item}
+          fit={stock ? 'cover' : wide ? 'cutout-crop' : 'cutout'}
+          sizes="(min-width: 640px) 180px, 110px"
+          className={cn('w-full', DESK_ASPECT[item.id] ?? 'aspect-square', stock && 'rounded-full shadow-tile ring-2 ring-white')}
+        />
+        {isMonitor(item.id) && <div className="-mt-1 h-1 w-1/2 rounded-full bg-jungle-950/20 blur-[2px]" />}
+      </div>
+    );
+  }
 
+  const box = size === 'lg' ? 'size-20 rounded-2xl' : 'size-14 rounded-xl sm:size-16';
   return (
-    <div
-      title={item.name}
-      className={cn('grid place-items-center border bg-white shadow-tile', box)}
-      style={{ color: cat.color, borderColor: `${cat.color}33`, backgroundColor: `color-mix(in oklab, ${cat.color} 10%, white)` }}
-    >
-      <ItemIcon icon={item.icon} emoji={item.emoji} size={24} className={icon} />
+    <div title={item.name} className={cn('overflow-hidden bg-white shadow-tile ring-2 ring-white', box)}>
+      <ItemPhoto item={item} sizes="80px" className="size-full" />
     </div>
+  );
+}
+
+/**
+ * Laptop on an aluminium stand, front view, in the sketch's line style. The stand lifts the
+ * screen ~15 cm so its top edge lines up with the lower edge of the monitors beside it.
+ */
+function LaptopOnStand() {
+  const s = { stroke: '#2b2a28', strokeWidth: 1.4, vectorEffect: 'non-scaling-stroke' as const, strokeLinejoin: 'round' as const };
+  return (
+    <svg viewBox="0 0 36 40" className="block w-full overflow-visible" aria-hidden>
+      <defs>
+        <linearGradient id="laptop-screen" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#bfe8f2" />
+          <stop offset="0.55" stopColor="#5fb3c9" />
+          <stop offset="1" stopColor="#2c6f86" />
+        </linearGradient>
+      </defs>
+      {/* screen */}
+      <rect x="3" y="2" width="30" height="20" rx="1.2" fill="#2d2d30" {...s} />
+      <rect x="4.2" y="3.2" width="27.6" height="17.4" rx="0.4" fill="url(#laptop-screen)" />
+      {/* keyboard deck, tilted toward you */}
+      <polygon points="2,22 34,22 35.5,25 0.5,25" fill="#c9ccd1" {...s} />
+      {/* stand: two raised arms and a foot */}
+      <polygon points="8,25 11,25 12.5,38 7.5,38" fill="#b4b8bf" {...s} />
+      <polygon points="25,25 28,25 28.5,38 23.5,38" fill="#b4b8bf" {...s} />
+      <rect x="6" y="37.5" width="24" height="2" rx="1" fill="#9ea3ab" {...s} />
+    </svg>
   );
 }
