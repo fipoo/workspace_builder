@@ -2,14 +2,22 @@
 
 A drag-and-drop builder for nomads in Bali. You design a workspace, watch the room change as you build it, and rent the whole setup in about two minutes.
 
-**Live:** _add the Vercel URL here after deploying_
+**Live:** https://workspace-builder.iqbaldwir.my.id/
+
+## Write-up
+
+**Approach.** I built the workspace as a small game with clear rules, not a free-form canvas. Every placement decision lives in pure, unit-tested functions in `lib/rules/`: what goes where, swapping a desk or chair, the 3-monitor limit, and whether an item physically fits on the desk. Drag-and-drop, tap-to-add and the quick-add buttons all call the same `usePlace()` hook, so they always agree, and the room preview simply renders what the store holds. Phones get their own flow (a bottom-sheet catalog with tap-to-add first) instead of a squeezed desktop layout.
+
+**Tech choices.** Next.js 15 (App Router) with TypeScript, because both pages prerender as static HTML and deploy to Vercel with no config. dnd-kit handles drag-and-drop with mouse, touch and keyboard, plus screen-reader announcements. Zustand with `persist` keeps the setup in one small store and saves it to `localStorage`. Tailwind CSS v4 does the styling, Framer Motion the swap and pop-in animations, and Vitest tests the rules and pricing.
+
+**With more time.** I'd connect a real inventory API with live stock, and use real product photos for every item (some still use Unsplash). I'd add a shareable setup link, preset kits such as "Dev Nomad" or "Content Creator", and undo/redo. I'd also replace the mock checkout with a real one (payment, or a WhatsApp handoff to a monis.rent agent) and add Playwright visual tests on desktop and mobile.
 
 ## What it does
 
-- **Build a room.** Drag a desk, a chair and gear from the catalog into the room, or tap an item to send it straight to its spot. The catalog has 7 categories with 10 items each.
+- **Build a room.** Drag a desk, a chair and gear from the catalog into the room, or tap an item to send it straight to its spot. The catalog has 101 items across 10 categories.
 - **Rules that feel like a game:**
   - The desk and chair are single slots, so dropping a new one swaps it in with a fly-out and pop-in animation.
-  - The desk top holds up to 8 accessories, and at most 3 of them can be monitors.
+  - The desk top holds as many accessories as physically fit, since every item has real dimensions in cm. At most 3 of them can be monitors.
   - The Coffee, Outdoor, Relax and Garage zones hold up to 4 items each.
   - Accessories stay locked until there is a desk. The builder shows "Pick a desk first."
 - **Live feedback.**
@@ -30,14 +38,14 @@ A drag-and-drop builder for nomads in Bali. You design a workspace, watch the ro
   - Tablet has two columns.
   - On phones the catalog becomes a bottom sheet with peek, half and full heights, and tap-to-add is the main way to add items. A long-press starts a drag.
 
-## Approach
+## How it works
 
-1. **The rules are pure functions.** `lib/rules.ts` (`canPlace`, `applyAdd`, `applyRemove`) decides every placement. Drag-and-drop, tap-to-add and the quick-add buttons all go through the same `usePlace()` hook, so they can never disagree. The rules and pricing are unit tested.
+1. **The rules are pure functions.** `lib/rules/` (`canPlace`, `applyAdd`, `applyRemove`) decides every placement. Drag-and-drop, tap-to-add and the quick-add buttons all go through the same `usePlace()` hook, so they can never disagree. The rules and pricing are unit tested.
 2. **Placement uses slots, not free coordinates.** Each drop zone is a `Slot` from the data model. A custom dnd-kit collision strategy picks the zone under the pointer that matches the dragged item's slot. That lets the desk-top zone sit inside the desk zone without conflicts. With the keyboard, you move between the matching zones only.
 3. **The UI is optimistic.** The store updates synchronously on drop, and Framer Motion animates the change afterwards. The canvas re-renders in the same frame.
 4. **Hydration is safe.** The persisted store uses `skipHydration` and rehydrates after mount, and `DndContext` has a stable `id`, so server and client HTML match.
 
-## Tech choices
+## Stack
 
 | Area | Choice | Why |
 |---|---|---|
@@ -64,8 +72,9 @@ components/               Catalog, Canvas, DropZone, DraggableItem, PlacedItem, 
                           QuickAdd, CartBar, Header, MiniPreview, Toast, usePlace
 store/useSetup.ts         persisted setup store + selectors
 store/useUI.ts            toasts and zone pulses (not persisted)
-data/catalog.ts           70 items across 7 categories
-lib/rules.ts              placement rules (tested)
+data/catalog.ts           101 items across 10 categories
+data/dims.ts              real item sizes in cm, used for desk-top fit
+lib/rules/                placement rules (tested)
 lib/pricing.ts            durations, totals, IDR formatting (tested)
 ```
 
@@ -77,13 +86,3 @@ npm run dev        # http://localhost:3000
 npm test           # unit tests
 npm run build      # production build
 ```
-
-## Would improve
-
-- Real monis.rent product images and an inventory API with live stock.
-- Free 2D/3D placement: drag items anywhere on the desk and rotate them, maybe with a three.js room.
-- A shareable setup link, with the setup encoded in the URL.
-- Preset templates such as a "Dev Nomad Kit", "Content Creator" or "Minimalist" setup.
-- WhatsApp checkout, sending the order summary to a monis.rent agent.
-- Undo/redo, plus an "are you sure?" step when swapping out a desk that has accessories on it.
-- Visual regression tests with Playwright on desktop and mobile.
