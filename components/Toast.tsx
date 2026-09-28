@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { CircleAlert, CircleCheck, Info } from 'lucide-react';
 import { useEffect } from 'react';
 import { useUI } from '@/store/useUI';
@@ -28,7 +28,7 @@ export function Toast() {
     >
       <AnimatePresence>
         {toast && (
-          <motion.div
+          <m.div
             key={toast.id}
             initial={{ opacity: 0, y: -16, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -42,7 +42,7 @@ export function Toast() {
               return <Icon size={18} aria-hidden />;
             })()}
             {toast.message}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

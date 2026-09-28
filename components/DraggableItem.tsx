@@ -1,74 +1,86 @@
 'use client';
 
 import { useDraggable } from '@dnd-kit/core';
-import { Check, Plus } from 'lucide-react';
-import { categoryOf, type Item } from '@/data/catalog';
+import { Check, Info, Plus } from 'lucide-react';
+import { type Item } from '@/data/catalog';
 import { cn, recentlyDragged, type DragData } from '@/lib/dnd';
-import { ItemIcon } from '@/lib/icons';
 import { formatIDRShort } from '@/lib/pricing';
 import { isSingleSlot } from '@/lib/rules';
 import { useSetup } from '@/store/useSetup';
+import { useUI } from '@/store/useUI';
+import { ItemPhoto } from './ItemPhoto';
 
-/** Catalog tile: drag it onto the canvas, or tap/Enter to send it to its slot. */
+/** Catalog tile (sketch style): drag it onto the stage, tap/Enter to add, ⓘ for full specs. */
 export function DraggableItem({ item, onTap, locked }: { item: Item; onTap: (item: Item) => void; locked?: boolean }) {
   const data: DragData = { kind: 'catalog', itemId: item.id, slot: item.slot };
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: `catalog:${item.id}`, data });
   const count = useSetup((s) => s.placed.filter((p) => p.itemId === item.id).length);
-  const cat = categoryOf(item);
+  const openDetail = useUI((s) => s.openDetail);
   const single = isSingleSlot(item.slot);
 
   return (
-    <button
-      ref={setNodeRef}
-      type="button"
-      {...attributes}
-      {...listeners}
-      aria-label={`${item.name}, ${formatIDRShort(item.pricePerMonth)} per month. Press Enter to add, Space to drag.`}
-      onClick={() => {
-        if (!recentlyDragged()) onTap(item);
-      }}
-      className={cn(
-        'group relative flex touch-manipulation select-none flex-col items-start gap-2 rounded-2xl bg-white/85 p-2.5 text-left shadow-tile ring-1 ring-jungle-900/5 transition duration-150 hover:-translate-y-0.5 hover:bg-white hover:ring-jungle-900/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lagoon-500 active:scale-[0.97] sm:p-3',
-        count > 0 && 'ring-2',
-        locked && 'opacity-70',
-      )}
-      style={{
-        opacity: isDragging ? 0.4 : undefined,
-        ...(count > 0 ? { ['--tw-ring-color' as string]: cat.color } : {}),
-      }}
-    >
-      <span
-        className="grid size-10 place-items-center rounded-xl transition-transform group-hover:-rotate-6 group-hover:scale-110 sm:size-11"
-        style={{ color: cat.color, backgroundColor: `color-mix(in oklab, ${cat.color} 12%, white)` }}
+    <div className="group relative">
+      <button
+        ref={setNodeRef}
+        type="button"
+        {...attributes}
+        {...listeners}
+        aria-label={`${item.name}, ${formatIDRShort(item.pricePerMonth)} per month. Press Enter to add, Space to drag.`}
+        onClick={() => {
+          if (!recentlyDragged()) onTap(item);
+        }}
+        className={cn(
+          'flex w-full touch-manipulation select-none flex-col items-stretch gap-0.5 rounded-lg border-[1.5px] bg-white p-1 text-left transition duration-150 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lagoon-500 active:scale-[0.97]',
+          count > 0 ? 'border-solid border-[#2b2a28] shadow-[2px_2px_0_#2b2a28]' : 'border-dashed border-[#2b2a2866] hover:border-solid hover:border-[#2b2a28]',
+          locked && 'opacity-70',
+        )}
+        style={{ opacity: isDragging ? 0.4 : undefined }}
       >
-        <ItemIcon icon={item.icon} emoji={item.emoji} size={22} />
-      </span>
-      <span className="line-clamp-2 min-h-[2.1em] text-[13px] font-semibold leading-tight text-jungle-900">
-        {item.name}
-      </span>
-      <span className="text-xs font-medium text-jungle-700/75">
-        {formatIDRShort(item.pricePerMonth)}
-        <span className="text-jungle-700/50">/mo</span>
-      </span>
+        <span className="relative block overflow-hidden rounded-lg bg-white">
+          <ItemPhoto
+            item={item}
+            fit={item.source === 'monis' ? 'cutout' : 'cover'}
+            sizes="(min-width: 1024px) 140px, 30vw"
+            className="aspect-square w-full transition-transform duration-300 group-hover:scale-105"
+          />
+          {item.source === 'monis' && (
+            <span className="absolute bottom-0.5 left-0.5 rounded-full bg-jungle-900/85 px-1 py-px text-[7.5px] font-bold tracking-wide text-sand-50">
+              monis.rent
+            </span>
+          )}
+        </span>
+        <span className="line-clamp-2 min-h-[2.2em] px-0.5 text-[10.5px] font-semibold leading-tight text-jungle-900">{item.name}</span>
+        <span className="whitespace-nowrap px-0.5 text-[9.5px] font-medium text-jungle-700/75">
+          {formatIDRShort(item.pricePerMonth)}
+          <span className="text-jungle-700/50">/mo</span>
+        </span>
+      </button>
 
       {count > 0 ? (
-        <span
-          className="absolute right-2 top-2 flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold text-white"
-          style={{ backgroundColor: cat.color }}
-        >
+        <span className="pointer-events-none absolute right-1.5 top-1.5 flex items-center gap-0.5 rounded-full bg-jungle-900 px-1 py-px text-[8.5px] font-bold text-white">
           {single ? (
             <>
-              <Check size={10} strokeWidth={3} aria-hidden /> In use
+              <Check size={9} strokeWidth={3} aria-hidden /> In use
             </>
           ) : (
             `×${count}`
           )}
         </span>
       ) : (
-        <span className="absolute right-2 top-2 grid size-6 place-items-center rounded-full bg-jungle-900/5 text-jungle-800/60 transition group-hover:bg-jungle-900 group-hover:text-sand-50">
-          <Plus size={14} strokeWidth={2.5} aria-hidden />
+        <span className="pointer-events-none absolute right-1.5 top-1.5 grid size-5 place-items-center rounded-full bg-white/95 text-jungle-800/70 shadow-sm ring-1 ring-[#2b2a2833] transition group-hover:bg-jungle-900 group-hover:text-sand-50">
+          <Plus size={11} strokeWidth={2.5} aria-hidden />
         </span>
       )}
-    </button>
+
+      <button
+        type="button"
+        onClick={() => openDetail(item.id)}
+        aria-label={`Details and specs for ${item.name}`}
+        title="Details & specs"
+        className="absolute left-1.5 top-1.5 grid size-5 place-items-center rounded-full border border-[#2b2a2855] bg-white text-jungle-800 transition hover:border-[#2b2a28] hover:bg-jungle-900 hover:text-white"
+      >
+        <Info size={11} aria-hidden />
+      </button>
+    </div>
   );
 }

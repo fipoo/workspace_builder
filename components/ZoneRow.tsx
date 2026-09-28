@@ -1,72 +1,93 @@
 'use client';
 
 import { AnimatePresence } from 'framer-motion';
-import { CATEGORIES, ZONE_SLOTS } from '@/data/catalog';
+import { Plus } from 'lucide-react';
+import { CATEGORIES, getItem, ZONE_SLOTS } from '@/data/catalog';
 import { cn } from '@/lib/dnd';
-import { ItemIcon } from '@/lib/icons';
 import { LIMITS } from '@/lib/rules';
 import { useSetup } from '@/store/useSetup';
 import { DropZone } from './DropZone';
+import { ItemPhoto } from './ItemPhoto';
 import { PlacedItem } from './PlacedItem';
+import { usePlace } from './usePlace';
 
-/** Coffee | Outdoor | Relax | Garage pads, each holding up to 4 items. */
+/** Shortcut tiles per zone, like the sketch's "+ Add Coffee Machine" / "+ Add Surfboard". */
+const SUGGEST: Record<string, [id: string, label: string][]> = {
+  coffee: [
+    ['coffee-espresso', 'Coffee Machine'],
+    ['coffee-mini-fridge', 'Mini Fridge'],
+  ],
+  outdoor: [
+    ['outdoor-surfboard', 'Surfboard'],
+    ['outdoor-motorbike', 'Motorcycle'],
+  ],
+  relax: [
+    ['relax-bean-bag', 'Bean Bag'],
+    ['relax-hammock', 'Hammock'],
+  ],
+  garage: [
+    ['garage-tool-shelf', 'Tool Shelf'],
+    ['garage-workbench', 'Workbench'],
+  ],
+};
+
+/** Coffee Station | Outdoor Gear | Relax Zone | Garage Space, each holding up to 4 items. */
 export function ZoneRow({ onPickCategory }: { onPickCategory?: (key: string) => void }) {
   const placed = useSetup((s) => s.placed);
+  const { place } = usePlace();
 
   return (
-    <section aria-label="Extra zones" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-      {ZONE_SLOTS.map((slot) => {
+    <section aria-label="Extra zones" className="grid grid-cols-2 border-t-[1.5px] border-[#2b2a28] lg:grid-cols-4">
+      {ZONE_SLOTS.map((slot, i) => {
         const cat = CATEGORIES.find((c) => c.slot === slot)!;
         const items = placed.filter((p) => p.slot === slot);
-        const full = items.length >= LIMITS.zone;
+        const room = LIMITS.zone - items.length;
+        const ideas = SUGGEST[cat.key].filter(([id]) => !items.some((p) => p.itemId === id)).slice(0, Math.min(2, room));
         return (
           <DropZone
             key={slot}
             slot={slot}
             lockedHint="Zone full"
-            className="relative flex min-h-[8.5rem] flex-col rounded-2xl border border-jungle-900/5 bg-[var(--zone-tint)] p-3 shadow-tile"
-            style={{ ['--zone-tint' as string]: `color-mix(in oklab, ${cat.color} 9%, #fdf8f1)` }}
+            className={cn(
+              'relative flex min-h-[9.5rem] flex-col items-center gap-3 px-3 pb-4',
+              i % 2 === 1 && 'border-l-[1.5px] border-dashed border-[#2b2a2866]',
+              i >= 2 && 'max-lg:border-t-[1.5px] max-lg:border-dashed max-lg:border-[#2b2a2866]',
+              i === 2 && 'lg:border-l-[1.5px] lg:border-dashed lg:border-[#2b2a2866]',
+            )}
           >
-            <div className="flex items-center justify-between gap-2">
-              <button
-                type="button"
-                onClick={() => onPickCategory?.(cat.key)}
-                className="flex min-w-0 items-center gap-1.5 rounded-lg text-left text-sm font-semibold hover:underline"
-                style={{ color: cat.color }}
-                title={`Browse ${cat.label}`}
-              >
-                <ItemIcon icon={cat.icon} emoji={cat.emoji} size={16} className="shrink-0" />
-                <span className="truncate font-display">{cat.short}</span>
-              </button>
-              <span className="flex gap-0.5" aria-label={`${items.length} of ${LIMITS.zone} used`}>
-                {Array.from({ length: LIMITS.zone }, (_, i) => (
-                  <span
-                    key={i}
-                    className={cn('size-1.5 rounded-full', i < items.length ? '' : 'bg-jungle-900/15')}
-                    style={i < items.length ? { backgroundColor: cat.color } : undefined}
-                  />
-                ))}
-              </span>
-            </div>
-            <div
-              className={cn(
-                'mt-2 flex flex-1 flex-wrap content-center items-center gap-2 rounded-xl',
-                items.length === 0 && 'justify-center border-2 border-dashed',
-              )}
-              style={items.length === 0 ? { borderColor: `${cat.color}33` } : undefined}
+            <button
+              type="button"
+              onClick={() => onPickCategory?.(cat.key)}
+              title={`Browse all ${cat.label}`}
+              className="-mt-px rounded-b-xl border-[1.5px] border-t-0 border-[#2b2a28] bg-white px-4 py-1.5 font-display text-sm font-bold hover:bg-[#f7f5f0] sm:text-base"
             >
+              {cat.label}
+            </button>
+
+            <div className="flex flex-wrap items-start justify-center gap-2">
               <AnimatePresence initial={false}>
                 {items.map((p) => (
-                  <PlacedItem key={p.uid} placed={p} />
+                  <PlacedItem key={p.uid} placed={p} removable />
                 ))}
               </AnimatePresence>
-              {items.length === 0 && (
-                <span className="px-2 text-center text-[11px] font-medium text-jungle-800/45">
-                  Drop {cat.short.toLowerCase()} gear here
-                </span>
-              )}
+              {ideas.map(([id, label]) => {
+                const item = getItem(id)!;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => place(id, slot, { announce: true })}
+                    className="group flex w-[5.5rem] flex-col items-center gap-1 rounded-xl border-[1.5px] border-dashed border-[#2b2a2866] bg-white p-1.5 transition hover:border-solid hover:border-[#2b2a28]"
+                  >
+                    <ItemPhoto item={item} sizes="80px" className="aspect-square w-full rounded-lg opacity-80 grayscale transition group-hover:opacity-100 group-hover:grayscale-0" />
+                    <span className="flex items-center gap-0.5 text-[10.5px] font-semibold leading-tight text-jungle-900">
+                      <Plus size={10} strokeWidth={3} aria-hidden /> {label}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-            {full && <span className="sr-only">Zone full</span>}
+            {room === 0 && <span className="text-[11px] font-medium text-jungle-800/50">Zone full ({LIMITS.zone}/{LIMITS.zone})</span>}
           </DropZone>
         );
       })}

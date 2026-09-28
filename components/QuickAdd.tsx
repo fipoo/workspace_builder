@@ -1,29 +1,25 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Check, RotateCcw } from 'lucide-react';
+import { Plus, RotateCcw } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getItem } from '@/data/catalog';
 import { cn } from '@/lib/dnd';
-import { ItemIcon } from '@/lib/icons';
 import { formatIDRShort } from '@/lib/pricing';
 import { canPlace } from '@/lib/rules';
 import { useSetup } from '@/store/useSetup';
-import { useUI } from '@/store/useUI';
+import { ItemPhoto } from './ItemPhoto';
 import { usePlace } from './usePlace';
 
+/** The sketch's right-hand tiles: one tap puts the item straight onto the desk. */
 const QUICK = [
   ['accessories-monitor-24', 'Monitor'],
+  ['mounts-dual-arm', 'Arm'],
+  ['accessories-laptop-stand', 'Stand'],
   ['accessories-plant', 'Plant'],
   ['accessories-desk-lamp', 'Lamp'],
-  ['accessories-keyboard', 'Keyboard'],
-  ['coffee-espresso', 'Espresso'],
-  ['outdoor-scooter', 'Scooter'],
+  ['accessories-webcam', 'Webcam'],
 ] as const;
 
-const LEVELS = ['Empty villa', 'Moving in', 'Getting there', 'Productive', 'Nomad Pro'];
-
-/** One-tap shortcuts plus a "setup level" meter. */
 export function QuickAdd({ className }: { className?: string }) {
   const placed = useSetup((s) => s.placed);
   const reset = useSetup((s) => s.reset);
@@ -36,93 +32,47 @@ export function QuickAdd({ className }: { className?: string }) {
     return () => clearTimeout(t);
   }, [confirm]);
 
-  const checks = [
-    { label: 'Desk', done: placed.some((p) => p.slot === 'desk') },
-    { label: 'Chair', done: placed.some((p) => p.slot === 'chair') },
-    { label: '2+ accessories', done: placed.filter((p) => p.slot === 'desk-surface').length >= 2 },
-    { label: 'A zone item', done: placed.some((p) => ['coffee', 'outdoor', 'relax', 'garage'].includes(p.slot)) },
-  ];
-  const score = checks.filter((c) => c.done).length;
-
   return (
-    <div className={cn('grid gap-4 sm:grid-cols-2 xl:grid-cols-1', className)}>
-      <section aria-labelledby="quick-add" className="rounded-3xl bg-white/70 p-4 shadow-tile ring-1 ring-jungle-900/5">
-        <h2 id="quick-add" className="font-display text-base font-bold">Quick add</h2>
-        <p className="text-xs text-jungle-800/60">One tap, straight into place.</p>
-        <div className="mt-3 grid grid-cols-3 gap-2 xl:grid-cols-2">
-          {QUICK.map(([id, label]) => {
-            const item = getItem(id)!;
-            const check = canPlace(placed, item, item.slot);
-            const ok = check.ok;
-            return (
-              <button
-                key={id}
-                type="button"
-                onClick={() => place(id, item.slot, { announce: true })}
-                title={check.ok ? `Add ${item.name}` : check.reason}
-                className={cn(
-                  'flex flex-col items-center gap-1 rounded-2xl border-2 border-dashed border-jungle-900/15 px-2 py-2.5 text-xs font-semibold transition hover:border-solid hover:border-lagoon-400 hover:bg-lagoon-50 active:scale-95',
-                  !ok && 'opacity-45',
-                )}
-              >
-                <ItemIcon icon={item.icon} emoji={item.emoji} size={20} className="text-jungle-800" />
-                <span>+{label}</span>
-                <span className="text-[10px] font-medium text-jungle-800/50">{formatIDRShort(item.pricePerMonth)}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      <section aria-labelledby="level" className="rounded-3xl bg-white/70 p-4 shadow-tile ring-1 ring-jungle-900/5">
-        <div className="flex items-baseline justify-between">
-          <h2 id="level" className="font-display text-base font-bold">Setup level</h2>
-          <span className="text-xs font-bold tabular-nums text-jungle-800/60">{score}/4</span>
-        </div>
-        <motion.p key={score} initial={{ y: 6, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="font-display text-xl font-extrabold text-sunset-600">
-          {LEVELS[score]}
-          {score === 4 && ' 🌴'}
-        </motion.p>
-        <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-jungle-900/10">
-          <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-lagoon-400 via-jungle-500 to-sunset-500"
-            animate={{ width: `${(score / 4) * 100}%` }}
-            transition={{ type: 'spring', stiffness: 200, damping: 24 }}
-          />
-        </div>
-        <ul className="mt-3 grid grid-cols-2 gap-1.5 text-xs">
-          {checks.map((c) => (
-            <li key={c.label} className={cn('flex items-center gap-1.5', c.done ? 'font-semibold text-jungle-900' : 'text-jungle-800/50')}>
-              <span
-                className={cn(
-                  'grid size-4 place-items-center rounded-full',
-                  c.done ? 'bg-jungle-700 text-white' : 'border border-jungle-900/20',
-                )}
-              >
-                {c.done && <Check size={10} strokeWidth={3} aria-hidden />}
+    <section aria-label="Quick add" className={cn('flex flex-col gap-3', className)}>
+      <div className="grid grid-cols-3 gap-x-1.5 gap-y-3.5">
+        {QUICK.map(([id, label]) => {
+          const item = getItem(id)!;
+          const check = canPlace(placed, item, item.slot);
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => place(id, item.slot, { announce: true })}
+              title={check.ok ? `${item.name} · ${formatIDRShort(item.pricePerMonth)}/mo` : check.reason}
+              className={cn('group relative flex flex-col items-center pb-3 transition active:scale-95', !check.ok && 'opacity-45')}
+            >
+              <span className="grid aspect-[5/4] w-full place-items-center rounded-xl border-[1.5px] border-dashed border-[#2b2a2866] bg-white transition group-hover:border-solid group-hover:border-[#2b2a28]">
+                <ItemPhoto item={item} fit="cutout" sizes="96px" className="size-[70%] mix-blend-multiply" />
               </span>
-              {c.label}
-            </li>
-          ))}
-        </ul>
-        <button
-          type="button"
-          disabled={placed.length === 0}
-          onClick={() => {
-            if (!confirm) return setConfirm(true);
+              <span className="absolute -bottom-0.5 flex items-center gap-0.5 whitespace-nowrap rounded-md border-[1.5px] border-[#2b2a28] bg-white px-1 py-px font-display text-[10px] font-bold text-[#2b2a28] shadow-[1.5px_1.5px_0_#2b2a28]">
+                <Plus size={9} strokeWidth={3} aria-hidden />
+                {label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <button
+        type="button"
+        onClick={() => {
+          if (confirm) {
             reset();
             setConfirm(false);
-            useUI.getState().showToast('Room cleared. Fresh start!', 'info');
-          }}
-          className={cn(
-            'mt-4 flex w-full items-center justify-center gap-1.5 rounded-full py-2 text-xs font-semibold transition disabled:opacity-40',
-            confirm ? 'bg-danger-500 text-white' : 'bg-jungle-900/5 text-jungle-800 hover:bg-jungle-900/10',
-          )}
-        >
-          <RotateCcw size={13} aria-hidden />
-          {confirm ? 'Tap again to clear everything' : 'Reset room'}
-        </button>
-      </section>
-    </div>
+          } else setConfirm(true);
+        }}
+        disabled={placed.length === 0}
+        className={cn(
+          'mt-1 flex items-center justify-center gap-1.5 rounded-xl border-[1.5px] border-dashed py-2 text-xs font-semibold transition disabled:opacity-40',
+          confirm ? 'border-danger-500 bg-danger-500 text-white' : 'border-[#2b2a2866] text-jungle-800 hover:border-solid hover:border-[#2b2a28]',
+        )}
+      >
+        <RotateCcw size={13} aria-hidden /> {confirm ? 'Tap again to clear the room' : 'Reset room'}
+      </button>
+    </section>
   );
 }
