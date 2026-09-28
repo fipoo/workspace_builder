@@ -1,0 +1,124 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-sand-50: #fdf8f1;
+  --color-sand-100: #f7eddf;
+  --color-sand-200: #eedcc3;
+  --color-sand-300: #e0c49f;
+  --color-sand-400: #cfa878;
+
+  --color-jungle-950: #0e2119;
+  --color-jungle-900: #14301f;
+  --color-jungle-800: #1d4030;
+  --color-jungle-700: #2a5541;
+  --color-jungle-500: #4f8a6b;
+  --color-jungle-300: #9cc4ad;
+
+  --color-sunset-50: #fff3ec;
+  --color-sunset-100: #fde0d1;
+  --color-sunset-400: #ef8a5c;
+  --color-sunset-500: #e2683c;
+  --color-sunset-600: #c9532a;
+
+  --color-lagoon-50: #e8f8f6;
+  --color-lagoon-100: #cdf1ec;
+  --color-lagoon-400: #2fb5a8;
+  --color-lagoon-500: #1f9e93;
+
+  --color-danger-500: #d9463b;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-tile: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 2px 0 rgb(20 48 31 / 0.08), 0 8px 18px -10px rgb(20 48 31 / 0.35);
+  --shadow-lift: 0 18px 40px -14px rgb(20 48 31 / 0.45);
+
+  --animate-bob: bob 3.2s ease-in-out infinite;
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  color: var(--color-jungle-900);
+  font-family: var(--font-sans);
+}
+
+/* Paper with a faint dot grid, like the sketch. Fixed to the viewport so the stage can reuse it
+   seamlessly: product packshots multiply against the same paper and lose their white box. */
+body,
+.paper {
+  background-color: #f8f7f4;
+  background-image: radial-gradient(rgb(43 42 40 / 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
+}
+
+.ghost-outline {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgb(20 48 31 / 0.05) 0 8px,
+    transparent 8px 16px
+  );
+}
+
+/* Drop zone feedback while dragging (see components/DropZone.tsx) */
+[data-zone] {
+  outline: 2px dashed transparent;
+  outline-offset: 4px;
+}
+[data-zone][data-state='valid'] {
+  outline-color: var(--color-lagoon-400);
+  background-color: rgb(47 181 168 / 0.08);
+}
+[data-zone][data-state='over'] {
+  outline: 3px solid var(--color-lagoon-400);
+  background-color: rgb(47 181 168 / 0.18);
+}
+[data-zone][data-state='locked'] {
+  outline-color: var(--color-sand-400);
+}
+[data-zone][data-state='blocked'] {
+  outline: 3px solid var(--color-danger-500);
+  background-color: rgb(217 70 59 / 0.1);
+}
+[data-zone][data-state='home'] {
+  outline-color: var(--color-jungle-300);
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Arm screens and chips may poke past the stage edge; never let that scroll the page sideways */
+html,
+body {
+  overflow-x: clip;
+}
+
+@utility scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(43 42 40 / 0.25) transparent;
+}
+

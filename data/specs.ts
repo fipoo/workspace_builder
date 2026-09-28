@@ -1,0 +1,547 @@
+// Product details shown in the catalog's detail view.
+// 'monis' = copied from the product page on monis.rent (Sept 2026).
+// 'typical' = typical specs for this kind of product, used as dummy data until monis.rent stocks it.
+
+export type Spec = [label: string, value: string];
+export type ProductSpecs = { source: 'monis' | 'typical'; summary: string; specs: Spec[]; included?: string[]; url?: string };
+
+const monis = (slug: string) => `https://www.monis.rent/products/${slug}`;
+
+export const SPECS: Record<string, ProductSpecs> = {
+  // ---------------- Desks ----------------
+  'desks-standing': {
+    source: 'monis',
+    url: monis('electrical-adjustable-desk'),
+    summary: 'Electric sit-stand desk with a quiet motor and button control.',
+    specs: [
+      ['Sizes', '110×60, 120×60, 140×60, 140×70 cm (shown: 140 cm)'],
+      ['Height', '70–118 cm, electric'],
+      ['Load', 'Up to 80 kg'],
+      ['Top / frame', 'Particleboard / steel'],
+      ['Model', 'WS414, GD914 or similar'],
+    ],
+    included: ['Desk', 'Power cord M'],
+  },
+  'desks-bamboo': {
+    source: 'monis',
+    url: monis('adjustable-wooden-desk'),
+    summary: 'IKEA Trotten desk with a crank to raise it. No electricity needed.',
+    specs: [
+      ['Sizes', '120×70, 160×80, 120×60 cm fixed (shown: 120 cm)'],
+      ['Height', '70–120 cm, manual crank'],
+      ['Top / frame', 'Particleboard / steel'],
+      ['Model', 'IKEA Trotten'],
+    ],
+    included: ['Desk'],
+  },
+  'desks-folding': {
+    source: 'monis',
+    url: monis('dual-motor-electric-standing-desk'),
+    summary: 'Monis Original dual-motor standing desk, built for multi-monitor setups.',
+    specs: [
+      ['Sizes', '120×70, 140×70, 160×70 cm (shown: 160 cm)'],
+      ['Height', '58–123 cm, 3-stage columns'],
+      ['Lift speed', 'Up to 36 mm/s'],
+      ['Load', 'Up to 120 kg'],
+      ['Top', '18 mm scratch-resistant'],
+      ['Frame', 'Heavy-duty steel, black'],
+    ],
+    included: ['Desk', 'Power cord M'],
+  },
+  'desks-l-shape': {
+    source: 'typical',
+    summary: 'Corner-friendly L desk with a side return for a laptop or paperwork.',
+    specs: [['Size', '160 × 120 cm, 60 cm deep'], ['Height', '75 cm fixed'], ['Load', '≈ 60 kg'], ['Material', 'Wood-look top, steel frame']],
+  },
+  'desks-minimal-oak': {
+    source: 'typical',
+    summary: 'Clean solid-oak writing desk for one screen and a laptop.',
+    specs: [['Size', '120 × 60 cm'], ['Height', '75 cm fixed'], ['Load', '≈ 40 kg'], ['Material', 'Oak veneer, oak legs']],
+  },
+  'desks-glass-top': {
+    source: 'typical',
+    summary: 'Tempered-glass top on crossed steel legs. Light look for small rooms.',
+    specs: [['Size', '120 × 60 cm'], ['Height', '75 cm fixed'], ['Top', '8 mm tempered glass'], ['Load', '≈ 50 kg']],
+  },
+  'desks-gaming': {
+    source: 'typical',
+    summary: 'Gaming desk with carbon-texture top, cable tray and RGB edge.',
+    specs: [['Size', '140 × 70 cm'], ['Height', '75 cm fixed'], ['Extras', 'Cable tray, cup holder, headset hook'], ['Load', '≈ 80 kg']],
+  },
+  'desks-compact': {
+    source: 'typical',
+    summary: 'Small desk for a laptop and one monitor in a villa bedroom.',
+    specs: [['Size', '100 × 50 cm'], ['Height', '75 cm fixed'], ['Load', '≈ 30 kg'], ['Material', 'MDF top, steel legs']],
+  },
+  'desks-executive': {
+    source: 'typical',
+    summary: 'Large wooden desk with two drawer pedestals. Room for three screens.',
+    specs: [['Size', '180 × 80 cm'], ['Height', '76 cm fixed'], ['Storage', '2 × 3 drawers'], ['Material', 'Walnut veneer']],
+  },
+  'desks-corner': {
+    source: 'typical',
+    summary: 'Space-saving corner desk with a lower keyboard shelf.',
+    specs: [['Size', '150 × 60 cm'], ['Height', '75 cm fixed'], ['Load', '≈ 50 kg'], ['Material', 'Wood-look top, steel frame']],
+  },
+
+  // ---------------- Chairs ----------------
+  'chairs-ergo-mesh': {
+    source: 'monis',
+    url: monis('ergonomic-office-chair'),
+    summary: 'Full ergonomic mesh chair with headrest, lumbar support and leg rest.',
+    specs: [
+      ['Model', 'OCA259PRO'],
+      ['Back / seat', 'Breathable mesh / high-density molded foam'],
+      ['Armrests', '4D: height, width, depth, angle'],
+      ['Support', 'Adjustable headrest and lumbar'],
+      ['Recline', 'Multi-angle with lock, retractable leg rest'],
+      ['Base', 'Reinforced 5-star metal, 60 mm silent casters'],
+    ],
+    included: ['Office chair'],
+  },
+  'chairs-gaming': {
+    source: 'typical',
+    summary: 'Racing-style chair with neck and lumbar pillows.',
+    specs: [['Seat height', '46–56 cm'], ['Recline', '90–155°'], ['Load', '≈ 130 kg'], ['Material', 'PU leather']],
+  },
+  'chairs-executive-leather': {
+    source: 'typical',
+    summary: 'High-back leather chair with padded arms.',
+    specs: [['Seat height', '47–55 cm'], ['Tilt', 'Rocking with tension knob'], ['Load', '≈ 120 kg'], ['Material', 'Leather, chrome base']],
+  },
+  'chairs-kneeling': {
+    source: 'typical',
+    summary: 'Opens the hip angle to keep your back upright.',
+    specs: [['Seat height', '50–65 cm'], ['Frame', 'Wood'], ['Load', '≈ 110 kg']],
+  },
+  'chairs-saddle': {
+    source: 'typical',
+    summary: 'Saddle stool for an active, upright posture. Pairs well with standing desks.',
+    specs: [['Seat height', '55–75 cm'], ['Base', '5-star with casters'], ['Load', '≈ 120 kg']],
+  },
+  'chairs-stool': {
+    source: 'typical',
+    summary: 'Simple wooden stool for short sessions or a bar-height desk.',
+    specs: [['Seat height', '45 cm'], ['Material', 'Solid wood'], ['Load', '≈ 100 kg']],
+  },
+  'chairs-rattan': {
+    source: 'typical',
+    summary: 'Hand-woven Bali rattan chair. Breathes well in humid weather.',
+    specs: [['Seat height', '44 cm'], ['Material', 'Natural rattan'], ['Load', '≈ 100 kg']],
+  },
+  'chairs-bean-chair': {
+    source: 'typical',
+    summary: 'Classic wooden chair for light desk use.',
+    specs: [['Seat height', '45 cm'], ['Material', 'Solid wood'], ['Load', '≈ 100 kg']],
+  },
+  'chairs-task': {
+    source: 'typical',
+    summary: 'Lightweight mesh task chair with fixed arms.',
+    specs: [['Seat height', '44–54 cm'], ['Back', 'Mesh with lumbar curve'], ['Load', '≈ 110 kg']],
+  },
+  'chairs-lounge': {
+    source: 'typical',
+    summary: 'Comfortable armchair for reading and calls, not long desk work.',
+    specs: [['Seat height', '42 cm'], ['Material', 'Fabric, wooden legs']],
+  },
+
+  // ---------------- Accessories ----------------
+  'accessories-monitor-24': {
+    source: 'monis',
+    url: monis('24-full-hd-office-monitor-a24i-2026'),
+    summary: 'Xiaomi A24i 2026, fast 144 Hz office monitor.',
+    specs: [
+      ['Panel', '23.8" Fast IPS, 1920 × 1080'],
+      ['Refresh / response', '144 Hz / 6 ms'],
+      ['Brightness / contrast', '300 nits / 1500:1'],
+      ['Colour', '99% sRGB, 8-bit (6-bit + FRC)'],
+      ['Ports', 'HDMI 2.0, DisplayPort 1.4'],
+      ['Size / weight', '53.9 × 17.0 × 43.4 cm / 3 kg'],
+      ['Stand', 'Tilt 5° / 15°, VESA 75 × 75'],
+    ],
+    included: ['Monitor', 'Power cord S', 'HDMI cable'],
+  },
+  'accessories-monitor-27': {
+    source: 'monis',
+    url: monis('27-4-k-multimedia-monitor'),
+    summary: 'Redmi 27" 4K with USB-C charging. Sharp text for code and design.',
+    specs: [
+      ['Panel', '27" IPS, 3840 × 2160 (4K)'],
+      ['Refresh / response', '60 Hz / 6 ms'],
+      ['Colour', '100% sRGB, 95% DCI-P3, HDR'],
+      ['Ports (USB-C version)', 'USB-C 90 W, 2 × HDMI 2.1, DP 1.4, 2 × USB-A'],
+      ['Size / weight', '61.3 × 20.0 × 51.5 cm / 3.6 kg'],
+      ['Mount', 'VESA'],
+    ],
+    included: ['Monitor', 'Power cord M', 'USB-C cable', 'HDMI cable'],
+  },
+  'accessories-ultrawide': {
+    source: 'monis',
+    url: monis('34-4-k-curved-monitor-180-hz'),
+    summary: 'Xiaomi 34" curved ultrawide at 180 Hz. Two screens of room, no bezel.',
+    specs: [
+      ['Model', 'C34WQBA'],
+      ['Panel', '34" 1500R curve, 3440 × 1440 WQHD'],
+      ['Refresh / response', '180 Hz / 1 ms, FreeSync'],
+      ['Colour', '95% DCI-P3, 100% sRGB, 350 nits'],
+      ['Ports', '2 × DP 1.4, 2 × HDMI 2.0'],
+      ['Size / weight', '81.0 cm wide / 8.6 kg'],
+    ],
+    included: ['Monitor', 'Power cord M', 'HDMI cable'],
+  },
+  'accessories-studio-display': {
+    source: 'monis',
+    url: monis('apple-studio-display'),
+    summary: 'Apple 27" 5K Retina with camera and six speakers built in.',
+    specs: [
+      ['Panel', '27" 5K Retina, 5120 × 2880, 600 nits, P3'],
+      ['Ports', 'Thunderbolt 3 (96 W), 3 × USB-C'],
+      ['Camera', '12 MP Ultra-Wide, Center Stage'],
+      ['Audio', '6 speakers, 3-mic array'],
+      ['Stand', 'Tilt (tilt + height variant available)'],
+    ],
+    included: ['Monitor', 'Apple power cord', 'Thunderbolt 4 cable'],
+  },
+  'accessories-desk-lamp': {
+    source: 'monis',
+    url: monis('smart-led-desk-lamp-1-s'),
+    summary: 'Mi LED Desk Lamp 1S, flicker-free with app and voice control.',
+    specs: [
+      ['Light', 'Up to 520 lm, 2600–5000 K, Ra 90'],
+      ['Modes', 'Focus, Reading, Computer, Child'],
+      ['Power', '9 W, 25,000 h lifespan'],
+      ['Smart', 'Wi-Fi, Google / Alexa / Siri'],
+      ['Size / weight', '16.2 × 16.2 × 47.9 cm / 0.8 kg'],
+    ],
+    included: ['Lamp', 'Power cord S'],
+  },
+  'accessories-plant': {
+    source: 'typical',
+    summary: 'Low-light tropical plant in a ceramic pot.',
+    specs: [['Size', '≈ 20 cm pot, 40 cm tall'], ['Care', 'Water weekly']],
+  },
+  'accessories-succulent': {
+    source: 'typical',
+    summary: 'A small succulent that fits in the free space under screens on a monitor arm.',
+    specs: [['Size', '≈ 10 cm pot, 12 cm tall'], ['Care', 'Water every two weeks']],
+  },
+  'accessories-keyboard': {
+    source: 'monis',
+    url: monis('logitech-mx-keyboard'),
+    summary: 'Logitech MX Keys, backlit and switches between 3 computers.',
+    specs: [
+      ['Layout', 'QWERTY English or QWERTZ German'],
+      ['Connection', 'Bluetooth, up to 10 m'],
+      ['Battery', 'Rechargeable, up to 5 months'],
+      ['Size / weight', '43.0 × 13.2 × 2.1 cm / 810 g'],
+    ],
+    included: ['Keyboard', 'Charging cable'],
+  },
+  'accessories-mouse': {
+    source: 'monis',
+    url: monis('logitech-mx-master-mouse-s3'),
+    summary: 'Logitech MX Master 3S, quiet clicks and MagSpeed wheel.',
+    specs: [
+      ['Sensor', '8,000 DPI Darkfield'],
+      ['Connection', 'Wireless, USB receiver, 3 devices'],
+      ['Battery', '70 days per charge'],
+      ['Size / weight', '12.5 × 8.4 × 5.1 cm / 141 g'],
+    ],
+    included: ['Mouse'],
+  },
+  'accessories-laptop-stand': {
+    source: 'monis',
+    url: monis('ergonomic-laptop-stand'),
+    summary: 'KOLMI aluminium stand. Lifts the laptop screen to eye level.',
+    specs: [
+      ['Fits', 'Laptops 10–17"'],
+      ['Material', 'Aluminium'],
+    ],
+    included: ['Laptop stand'],
+  },
+  'accessories-webcam': {
+    source: 'monis',
+    url: monis('logitech-4-k-webcam'),
+    summary: 'Logitech Brio 4K with autofocus and noise-cancelling mic.',
+    specs: [
+      ['Video', '4K/30, 1080p/60, 720p/90'],
+      ['Field of view', '3 settings'],
+      ['Mount', 'Monitor clip, tripod thread'],
+      ['Size / weight', '10.2 × 2.7 × 2.7 cm / 63 g'],
+      ['Cable', 'USB-A to USB-C, 2.2 m'],
+    ],
+    included: ['Webcam', 'Cable'],
+  },
+
+  // ---------------- Coffee ----------------
+  'coffee-espresso': {
+    source: 'monis',
+    url: monis('nespresso-essenza-coffee-machine'),
+    summary: 'Nespresso Essenza Mini for espresso and lungo in 25 seconds.',
+    specs: [
+      ['Pump', '19 bar'],
+      ['Cups', 'Espresso 40 ml, Lungo 110 ml'],
+      ['Tank', '600 ml, removable'],
+      ['Power', '1260 W, auto shut-off'],
+      ['Size / weight', '20.4 × 8.4 × 33.0 cm / 2.3 kg'],
+    ],
+    included: ['Coffee machine', 'Power cord S'],
+  },
+  'coffee-drip': {
+    source: 'monis',
+    url: monis('bosch-coffee-maker'),
+    summary: 'Bosch TKA2M113 filter coffee for 10–15 cups.',
+    specs: [
+      ['Tank', '1.4 L, removable'],
+      ['Power', '1200 W, auto-off after 40 min'],
+      ['Extras', 'Drip-stop, swing-out filter, glass carafe'],
+      ['Size / weight', '34.7 × 23.2 × 29.5 cm / 2.3 kg'],
+    ],
+    included: ['Coffee machine'],
+  },
+  'coffee-kettle': { source: 'typical', summary: 'Fast-boil electric kettle.', specs: [['Capacity', '1.7 L'], ['Power', '2200 W'], ['Material', 'Stainless steel']] },
+  'coffee-grinder': { source: 'typical', summary: 'Burr grinder for fresh beans.', specs: [['Grind', '15 settings'], ['Hopper', '250 g'], ['Power', '150 W']] },
+  'coffee-mini-fridge': { source: 'typical', summary: 'Quiet mini fridge for drinks and milk.', specs: [['Capacity', '45 L'], ['Size', '47 × 45 × 51 cm'], ['Noise', '≈ 38 dB']] },
+  'coffee-mug-set': { source: 'typical', summary: 'Four stoneware mugs.', specs: [['Set', '4 × 350 ml'], ['Care', 'Dishwasher safe']] },
+  'coffee-water-dispenser': { source: 'typical', summary: 'Hot and cold dispenser for 19 L gallons.', specs: [['Bottle', '19 L galon'], ['Taps', 'Hot / normal / cold']] },
+  'coffee-moka-pot': { source: 'typical', summary: 'Stovetop moka pot.', specs: [['Size', '6 cups'], ['Material', 'Aluminium']] },
+  'coffee-french-press': { source: 'typical', summary: 'Glass French press.', specs: [['Capacity', '1 L'], ['Material', 'Borosilicate glass, steel']] },
+  'coffee-tea-set': { source: 'typical', summary: 'Teapot with four cups.', specs: [['Teapot', '800 ml'], ['Material', 'Ceramic']] },
+
+  // ---------------- Outdoor ----------------
+  'outdoor-surfboard': { source: 'typical', summary: 'Soft-top board, forgiving for Canggu beach breaks.', specs: [['Length', "7'0\""], ['Type', 'Soft-top funboard'], ['Includes', 'Leash']] },
+  'outdoor-motorbike': { source: 'typical', summary: 'Automatic scooter for getting around Bali.', specs: [['Engine', '125 cc automatic'], ['Includes', '2 helmets, rain cover']] },
+  'outdoor-bicycle': { source: 'typical', summary: 'City bike with basket.', specs: [['Frame', 'M, aluminium'], ['Gears', '7-speed'], ['Includes', 'Lock']] },
+  'outdoor-helmet': { source: 'typical', summary: 'Half-face scooter helmet.', specs: [['Standard', 'SNI certified'], ['Sizes', 'M / L']] },
+  'outdoor-raincoat': { source: 'typical', summary: 'Two-piece rain suit for the wet season.', specs: [['Sizes', 'M–XL'], ['Material', 'Waterproof PVC']] },
+  'outdoor-backpack': { source: 'typical', summary: 'Laptop-friendly travel backpack.', specs: [['Volume', '30 L'], ['Laptop', 'Up to 16"'], ['Material', 'Water-resistant']] },
+  'outdoor-skateboard': { source: 'typical', summary: 'Street skateboard.', specs: [['Deck', '8.0" maple'], ['Wheels', '52 mm']] },
+  'outdoor-snorkel': { source: 'typical', summary: 'Mask, snorkel and fins.', specs: [['Mask', 'Tempered glass'], ['Fins', 'S–XL']] },
+  'outdoor-umbrella': { source: 'typical', summary: 'Beach umbrella with tilt.', specs: [['Diameter', '180 cm'], ['UV', 'UPF 50+']] },
+  'outdoor-cooler-box': { source: 'typical', summary: 'Keeps drinks cold for a beach day.', specs: [['Capacity', '28 L'], ['Ice retention', '≈ 2 days']] },
+
+  // ---------------- Relax ----------------
+  'relax-bean-bag': { source: 'typical', summary: 'Large bean bag, indoor/outdoor fabric.', specs: [['Size', '100 × 90 cm'], ['Cover', 'Washable']] },
+  'relax-sofa': { source: 'typical', summary: 'Three-seat fabric sofa.', specs: [['Size', '200 × 88 cm'], ['Seats', '3']] },
+  'relax-hammock': { source: 'typical', summary: 'Cotton hammock with stand.', specs: [['Length', '280 cm incl. stand'], ['Load', '≈ 150 kg']] },
+  'relax-floor-cushion': { source: 'typical', summary: 'Thick floor cushion.', specs: [['Size', '60 × 60 × 15 cm'], ['Cover', 'Cotton, removable']] },
+  'relax-rug': { source: 'typical', summary: 'Woven area rug.', specs: [['Size', '160 × 230 cm'], ['Material', 'Jute blend']] },
+  'relax-yoga-mat': { source: 'typical', summary: 'Non-slip yoga mat.', specs: [['Size', '183 × 61 cm'], ['Thickness', '6 mm']] },
+  'relax-massage-chair': { source: 'typical', summary: 'Full-body massage chair.', specs: [['Programs', '12 auto'], ['Size', '140 × 80 × 115 cm'], ['Power', '220 V']] },
+  'relax-hanging-chair': { source: 'typical', summary: 'Rattan egg chair on a stand.', specs: [['Height', '195 cm incl. stand'], ['Load', '≈ 120 kg']] },
+  'relax-side-table': { source: 'typical', summary: 'Small round side table.', specs: [['Size', 'Ø 45 × 50 cm'], ['Material', 'Teak']] },
+  'relax-floor-lamp': {
+    source: 'monis',
+    url: monis('hue-signe-gradient-lamp'),
+    summary: 'Philips Hue Signe gradient lamp. Mood lighting in any colour.',
+    specs: [
+      ['Light', '730–1,040 lm, 2000–6500 K, multicolour gradient'],
+      ['Smart', 'Bluetooth, Zigbee, Alexa / Google / Siri'],
+      ['Power', '≈ 11.8 W, 100–240 V'],
+      ['Size / weight', '11.1 × 11.1 × 55.3 cm / 0.72 kg'],
+    ],
+    included: ['Lamp', 'Power cord S'],
+  },
+
+  // ---------------- Garage ----------------
+  'garage-tool-shelf': { source: 'typical', summary: 'Five-tier steel shelf.', specs: [['Size', '90 × 40 × 180 cm'], ['Load', '≈ 150 kg per shelf']] },
+  'garage-toolbox': { source: 'typical', summary: 'Basic home tool kit.', specs: [['Pieces', '108'], ['Case', 'Hard case']] },
+  'garage-workbench': { source: 'typical', summary: 'Sturdy wooden workbench.', specs: [['Size', '150 × 60 × 90 cm'], ['Load', '≈ 200 kg']] },
+  'garage-storage-rack': { source: 'typical', summary: 'Wire storage rack.', specs: [['Size', '120 × 45 × 180 cm'], ['Shelves', '4']] },
+  'garage-bike-rack': { source: 'typical', summary: 'Wall rack for two bikes or boards.', specs: [['Holds', '2 bikes'], ['Mount', 'Wall']] },
+  'garage-ladder': { source: 'typical', summary: 'Aluminium step ladder.', specs: [['Steps', '5'], ['Height', '150 cm'], ['Load', '≈ 150 kg']] },
+  'garage-pegboard': { source: 'typical', summary: 'Metal pegboard with hooks.', specs: [['Size', '120 × 60 cm'], ['Includes', '20 hooks']] },
+  'garage-drill-set': { source: 'typical', summary: 'Cordless drill with bits.', specs: [['Battery', '18 V, 2 packs'], ['Bits', '30 pcs']] },
+  'garage-fan': { source: 'typical', summary: 'Standing fan for the hot afternoons.', specs: [['Blade', '16"'], ['Speeds', '3'], ['Power', '45 W']] },
+  'garage-cabinet': { source: 'typical', summary: 'Lockable steel cabinet.', specs: [['Size', '90 × 45 × 180 cm'], ['Lock', 'Key']] },
+
+  // ---------------- Monitor mounts ----------------
+  'mounts-single-arm': { source: 'typical', summary: 'Gas-spring arm for one screen. Frees the desk under it and lets you turn the screen to portrait.', specs: [['Screens', '1 × 17–32"'], ['Load', '2–8 kg per screen'], ['Mount', 'VESA 75/100, desk clamp or grommet'], ['Moves', 'Height, tilt ±90°, swivel, rotate 360°']] },
+  'mounts-dual-arm': { source: 'typical', summary: 'Two screens side by side on one pole. Screens float ~20 cm above the desk.', specs: [['Screens', '2 × 17–32"'], ['Load', '2–8 kg per screen'], ['Mount', 'VESA 75/100, desk clamp'], ['Moves', 'Height, tilt, swivel, portrait rotate']] },
+  'mounts-triple-arm': { source: 'typical', summary: 'Three screens in a row on one pole, for trading and coding setups.', specs: [['Screens', '3 × 17–27"'], ['Load', '2–8 kg per screen'], ['Mount', 'VESA 75/100, desk clamp'], ['Moves', 'Tilt, swivel, portrait rotate']] },
+  'mounts-heavy-arm': { source: 'typical', summary: 'Strong gas-spring arm made for heavy ultrawides like the 34" (8.6 kg).', specs: [['Screens', '1 × up to 49"'], ['Load', '3–15 kg'], ['Mount', 'VESA 75/100, desk clamp']] },
+  'mounts-stacked-arm': { source: 'typical', summary: 'Two screens stacked vertically, one above the other. Saves desk width.', specs: [['Screens', '2 × 17–27", stacked'], ['Load', '2–8 kg per screen'], ['Pole', '80 cm'], ['Mount', 'VESA 75/100, desk clamp']] },
+  'mounts-monitor-riser': {
+    source: 'monis',
+    url: monis('adjustable-monitor-stand'),
+    summary: 'Nillkin metal riser. Lifts a monitor on its own stand to eye level, with storage under it.',
+    specs: [
+      ['Size', '29.0 × 22.8 cm'],
+      ['Height', '11–18 cm, adjustable'],
+      ['Load', 'Up to 15 kg'],
+      ['Material', 'Metal, black'],
+    ],
+  },
+  'mounts-light-bar': {
+    source: 'monis',
+    url: monis('metal-monitor-light-bar'),
+    summary: 'Mijia light bar that clips on top of a monitor and lights the desk, not the screen.',
+    specs: [
+      ['Model', 'MJGJD01YL'],
+      ['Light', '5 W, 2700–6500 K, Ra95'],
+      ['Control', '2.4 GHz wireless remote'],
+      ['Power', 'USB-C'],
+    ],
+    included: ['Light bar', 'USB-C cable'],
+  },
+  'mounts-cable-tray': { source: 'typical', summary: 'Steel tray under the desk that hides power strips and cables.', specs: [['Size', '60 × 12 cm'], ['Mount', 'Screws under the desk top']] },
+  'mounts-power-hub': { source: 'typical', summary: 'Clamp-on power hub at the back edge of the desk.', specs: [['Outlets', '3 × universal AC'], ['USB', '2 × USB-A, 1 × USB-C 30 W'], ['Mount', 'Desk clamp']] },
+  'mounts-headphone-hook': { source: 'typical', summary: 'Hook that clamps under the desk edge.', specs: [['Load', 'Up to 3 kg'], ['Mount', 'Clamp, no screws']] },
+
+  // ---------------- Audio ----------------
+  'audio-marshall': {
+    source: 'monis',
+    url: monis('marshall-woburn-ii-bluetooth'),
+    summary: 'Marshall Woburn III home speaker. Big sound, fills a villa.',
+    specs: [
+      ['Output', '110 W, 110 dB at 1 m'],
+      ['Drivers', '2 × 1" tweeters, 2 × 5.25" woofers'],
+      ['Range', '35 Hz – 20 kHz'],
+      ['Inputs', 'Bluetooth 5.0, 3.5 mm, optical'],
+      ['Size / weight', '40 × 31 × 20 cm / 8.5 kg'],
+    ],
+    included: ['Speaker', 'Power cord S'],
+  },
+  'audio-homepod': {
+    source: 'monis',
+    url: monis('apple-home-pod'),
+    summary: 'Apple HomePod 2nd gen with spatial audio and Siri.',
+    specs: [
+      ['Audio', 'High-excursion woofer, 5 beamforming tweeters'],
+      ['Connectivity', 'Wi-Fi, Bluetooth 5.0, AirPlay 2, Thread, Matter'],
+      ['Colours', 'Midnight, White'],
+      ['Size / weight', '14.2 × 16.8 cm / 2.3 kg (Apple spec, the monis.rent page lists the Marshall size by mistake)'],
+    ],
+    included: ['Speaker', 'Apple power cord'],
+  },
+  'audio-podcast-mic': {
+    source: 'monis',
+    url: monis('podcast-microphone-kit'),
+    summary: 'Shure MV7 / MV7+ podcast kit on a Manfrotto PIXI tripod.',
+    specs: [
+      ['Type', 'Dynamic cardioid'],
+      ['Range', 'MV7 50–16,000 Hz · MV7+ 40–20,000 Hz'],
+      ['Outputs', 'XLR + USB, 3.5 mm monitor'],
+      ['Weight', '550 g (MV7)'],
+    ],
+    included: ['Microphone', 'Manfrotto PIXI tripod'],
+  },
+  'audio-boom-arm': {
+    source: 'monis',
+    url: monis('microphone-boom-arm'),
+    summary: 'Soundtech V2 boom arm that clamps to the desk.',
+    specs: [
+      ['Reach', '80 cm'],
+      ['Load', '0.1–1 kg'],
+      ['Size / weight', '6 × 35.9 × 89 cm / 1.6 kg'],
+      ['Extras', 'Built-in cable management'],
+    ],
+    included: ['Boom arm'],
+  },
+  'audio-dj-controller': {
+    source: 'monis',
+    url: monis('pioneer-dj-controller'),
+    summary: 'Pioneer DDJ-FLX4, 2-channel controller for rekordbox and Serato.',
+    specs: [
+      ['Power', 'USB-C bus powered'],
+      ['Outputs', 'RCA master, 3.5 mm headphones'],
+      ['Extras', 'Smart Fader, Smart CFX, Bluetooth input'],
+      ['Size / weight', '48.2 × 27.2 × 5.9 cm / 2.1 kg'],
+    ],
+    included: ['DJ controller', 'USB-C cable', 'RCA cable'],
+  },
+  'audio-desk-speakers': { source: 'typical', summary: 'Pair of compact powered desk speakers.', specs: [['Output', '2 × 20 W'], ['Inputs', 'Bluetooth, 3.5 mm, optical'], ['Size', '15 × 22 cm each']] },
+  'audio-soundbar': { source: 'typical', summary: 'Slim soundbar that sits under a monitor.', specs: [['Width', '55 cm'], ['Output', '2 × 10 W'], ['Power', 'USB']] },
+  'audio-studio-monitors': { source: 'typical', summary: 'Near-field studio monitors for music production.', specs: [['Woofer', '5"'], ['Output', '2 × 35 W'], ['Size', '17 × 25 cm each']] },
+  'audio-headphones': { source: 'typical', summary: 'Noise-cancelling over-ear headphones.', specs: [['ANC', 'Yes'], ['Battery', '≈ 30 h'], ['Connection', 'Bluetooth, 3.5 mm']] },
+  'audio-bt-speaker': { source: 'typical', summary: 'Waterproof speaker for the beach or pool.', specs: [['Output', '20 W'], ['Battery', '≈ 12 h'], ['Rating', 'IP67']] },
+
+  // ---------------- Computers ----------------
+  'computers-macbook-neo': {
+    source: 'monis',
+    url: monis('apple-mac-book-neo'),
+    summary: 'Apple MacBook Neo 13" (2026), light and all-day battery.',
+    specs: [
+      ['Chip', 'A18 Pro, 6-core CPU, 5-core GPU'],
+      ['Memory / storage', '8 GB / 256 GB SSD'],
+      ['Display', '13" Liquid Retina, 2408 × 1506, 500 nits'],
+      ['Ports', '2 × USB-C, 3.5 mm'],
+      ['Battery', 'Up to 16 h'],
+      ['Size / weight', '29.8 × 20.6 × 1.3 cm / 1.23 kg'],
+    ],
+    included: ['Laptop', 'Apple power cord'],
+  },
+  'computers-windows-laptop': {
+    source: 'monis',
+    url: monis('office-windows-laptop'),
+    summary: 'Xiaomi RedmiBook 15 for everyday office work.',
+    specs: [
+      ['CPU', 'Intel Core i3-1115G4'],
+      ['Memory / storage', '8 GB DDR4 / 256 GB NVMe'],
+      ['Display', '15.6" Full HD, 220 nits, anti-glare'],
+      ['Ports', 'HDMI, 3 × USB-A, LAN, SD'],
+      ['Size / weight', '36.4 × 24.4 × 2.0 cm / 1.8 kg'],
+    ],
+    included: ['Laptop', 'Power cord S'],
+  },
+  'computers-mac-mini-m4': {
+    source: 'monis',
+    url: monis('apple-mac-mini-m4'),
+    summary: 'Tiny desktop that drives up to 3 screens.',
+    specs: [
+      ['Chip', 'M4, 10-core CPU, 10-core GPU'],
+      ['Memory / storage', '16 GB / 256 GB SSD'],
+      ['Ports', '2 × Thunderbolt 4, HDMI, 2 × USB-A, Ethernet'],
+      ['Size / weight', '12.7 × 12.7 × 5.0 cm / 0.67 kg (Apple spec, the monis.rent page lists a laptop size by mistake)'],
+    ],
+    included: ['Mac mini', 'Apple power cord'],
+  },
+  'computers-mac-mini-m2': {
+    source: 'monis',
+    url: monis('apple-mac-mini-m2-new'),
+    summary: 'Mac mini M2 or M2 Pro desktop.',
+    specs: [
+      ['Chip', 'M2 8-core / M2 Pro 10-core'],
+      ['Memory / storage', '8–16 GB / 256–512 GB'],
+      ['Screens', 'Up to 2 (M2) or 3 (M2 Pro)'],
+      ['Size / weight', '19.7 × 19.7 × 3.6 cm / 1.2 kg (Apple spec)'],
+    ],
+    included: ['Mac mini', 'Apple power cord'],
+  },
+  'computers-mac-studio': {
+    source: 'monis',
+    url: monis('apple-mac-studio'),
+    summary: 'Pro desktop for video, 3D and big builds.',
+    specs: [
+      ['Chip', 'M1 Max (32 GB, 512 GB) or M2 Ultra (64 GB, 1 TB)'],
+      ['Screens', 'Up to 4 (M1 Max) or 8 (M2 Ultra)'],
+      ['Ports', '4–6 × Thunderbolt 4, HDMI, 10Gb Ethernet, SDXC'],
+      ['Size / weight', '19.7 × 19.7 × 9.5 cm / 2.7 kg'],
+    ],
+    included: ['Mac Studio', 'Apple power cord'],
+  },
+  'computers-dock': {
+    source: 'monis',
+    url: monis('display-docking-station'),
+    summary: 'Wavlink 15-in-1 dock: three screens from one USB-C cable.',
+    specs: [
+      ['Screens', 'Up to 3 (4K@60 + 2 × 2.5K@60)'],
+      ['Charging', 'Up to 100 W USB-C PD'],
+      ['Ports', '3 × HDMI, 2 × DP, 4 × USB-A, 2 × USB-C, Ethernet'],
+      ['Size / weight', '22.3 × 9.1 × 2.9 cm / 378 g'],
+    ],
+    included: ['Dock', 'Power cord M', 'USB-C cable'],
+  },
+  'computers-usb-hub': {
+    source: 'monis',
+    url: monis('6-in-1-converter-hub'),
+    summary: 'Ugreen 6-in-1 hub for laptops with few ports.',
+    specs: [
+      ['Ports', 'USB-C PD, USB 3.0, USB 2.0, 4K HDMI, SD, microSD'],
+      ['Material', 'Aluminium'],
+    ],
+  },
+  'computers-macbook-pro': { source: 'typical', summary: 'MacBook Pro 14" for heavy workloads.', specs: [['Chip', 'M-series Pro'], ['Display', '14.2" Liquid Retina XDR'], ['Size / weight', '31.3 × 22.1 cm / 1.6 kg']] },
+  'computers-gaming-pc': { source: 'typical', summary: 'Mid-tower gaming PC with RGB.', specs: [['GPU', 'RTX-class'], ['Size', '22 × 45 × 45 cm'], ['Power', '750 W']] },
+  'computers-ipad-pro': { source: 'typical', summary: 'iPad Pro with Magic Keyboard for light work and sketching.', specs: [['Display', '13"'], ['Keyboard', 'Magic Keyboard, trackpad'], ['Size', '28 × 21.5 cm']] },
+};
